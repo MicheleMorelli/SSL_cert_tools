@@ -6,6 +6,17 @@ use Crypt::OpenSSL::Random;
 use Data::Dumper;
 
 #TODO: test this module a bit
-print Crypt::OpenSSL::RSA ->generate_key(2048)->get_private_key_string();
 
+my $SITECODE = $ARGV[0];
+
+my $rsa = Crypt::OpenSSL::RSA ->generate_key(2048)->get_private_key_string();
+
+
+open my $fh, '>', "$SITECODE.key" or die "cannnot do that $!";
+
+print $fh $rsa;
+
+close $fh;
+
+print ("done\n");
 
