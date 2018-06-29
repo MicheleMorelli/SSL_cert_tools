@@ -4,6 +4,7 @@ use strict;
 use Crypt::OpenSSL::RSA;
 use Crypt::OpenSSL::Random;
 use Data::Dumper;
+use Custom::perl_utils;
 
 my $SITECODE = $ARGV[0];
 
@@ -24,16 +25,5 @@ open  $fh, '<', "$SITECODE.key"
 chmod 400, $fh;
 
 close $fh;
-
-my $func = {};
-
-$func->{ll} = sub {
-    opendir my($dh), '.' or die "cannot open dir: $!"; 
-    while ( readdir $dh){
-        my $mode = (stat($_))[2]; 
-        printf "%04o   $_\n", $mode & 07777;
-    }
-    closedir $dh;
-};
 
 $func->{ll}();
