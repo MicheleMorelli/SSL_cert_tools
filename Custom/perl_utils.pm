@@ -1,15 +1,15 @@
 package perl_utils;
+
 use strict;
 use warnings;
 use Exporter;
 
 our @ISA = qw/ Exporter /;
-
 our @EXPORT = qw/ $funct /;
 
 our $funct = {};
 
-$func->{ll} = sub {
+$funct->{ll} = sub {
     opendir my($dh), '.' or die "cannot open dir: $!"; 
     while ( readdir $dh){
         my $mode = (stat($_))[2]; 
