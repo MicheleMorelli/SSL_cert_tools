@@ -9,10 +9,11 @@ use Data::Dumper;
 
 my $SITECODE = $ARGV[0];
 
+# generating the private key
 my $rsa = Crypt::OpenSSL::RSA ->generate_key(2048)->get_private_key_string();
 
 
-open my $fh, '>', "$SITECODE.key" or die "cannnot do that $!";
+open my $fh, '>', "$SITECODE.key" or die "Cannot create private key $SITECODE.key: $!";
 
 print $fh $rsa;
 
