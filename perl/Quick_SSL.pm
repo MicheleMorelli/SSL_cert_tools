@@ -46,15 +46,29 @@ $funct->{make_read_only} = sub{
 };
 
 
-$funct->{print_subject} = sub {
+$funct->{pretty_subject} = sub {
     my ( $SITECODE) = @_;
     my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
         or die "Cannot open certificate: $!";
-    print $cert->subject();
+    my $subject = $cert->subject();
+    #jurisdictionC=##, businessCategory=#################,
+    #serialNumber=########,
+    #C=##, ST=######, L=###########, O=################,
+    #CN=###############
+    print $subject;
 };
 
 
-$funct->{certificate_has_expired} = sub {
+$funct->{will_expire_in_one_month} = sub{
+    my ( $SITECODE) = @_;
+    my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
+        or die "Cannot open certificate: $!";
+    my $one_month_in_seconds = 2592000;
+    return $cert->checkend($one_month_in_seconds);
+};
+
+
+$funct->{has_expired} = sub {
     my ( $SITECODE) = @_;
     my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
         or die "Cannot open certificate: $!";
@@ -95,7 +109,6 @@ $funct->{give_month_number} = sub {
     return $month_names->{$month};
 };
 
-print ( ($funct->{certificate_has_expired}()) ? "The Certificate has expired": "all good"); 
 
 1;
 
@@ -123,11 +136,11 @@ Generates a private key and stores it in a .key file.
 
 Makes a file read only (chmod 400).
 
-=head2 print subject
+=head2 pretty_subject
 
 Prints the subject of a SSL certificate.
 
-=head2 certificate_has_expired
+=head2 has_expired
 
 Checks if a SSL certificate has expired. 
 
