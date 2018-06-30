@@ -1,10 +1,7 @@
 #! /usr/bin/perl -w
 use strict;
 
-use Crypt::OpenSSL::RSA;
-use Crypt::OpenSSL::Random;
-use Data::Dumper;
-use Perl_utils qw( $funct );
+use Perl_utils;
 
 my $SITECODE = $ARGV[0];
 
