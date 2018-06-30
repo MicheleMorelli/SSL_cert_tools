@@ -50,8 +50,7 @@ $funct->{print_subject} = sub {
     my ( $SITECODE) = @_;
     my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
         or die "Cannot open certificate: $!";
-    my $dt = DateTime->now;
-    print $cert->notAfter() > DateTime->now();
+    print $cert->subject();
 };
 
 
@@ -123,5 +122,17 @@ Generates a private key and stores it in a .key file.
 =head2 make_read_only
 
 Makes a file read only (chmod 400).
+
+=head2 print subject
+
+Prints the subject of a SSL certificate.
+
+=head2 check_expired
+
+Checks if a SSL certificate has expired. 
+
+=head2 give_month_number
+
+Checks if a SSL certificate has expired. 
 
 =cut
