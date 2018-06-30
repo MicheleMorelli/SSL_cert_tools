@@ -60,8 +60,24 @@ $funct->{check_expired} = sub {
     my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
         or die "Cannot open certificate: $!";
     my $now = DateTime->now;
-    #Jun 15 13:23:00 2020 GMT
+    
+    # Current format:
+    # Jun 15 13:23:00 2020 GMT
     $cert->notAfter() =~ m#([A-Za-z]{3}) (\d\d) \d{2}:\d{2}:\d{2} (\d{4})#gi;
+
+    my $expiry_date = DateTime->new(
+        day=> $2,
+        month => $funct->{give_month_number}($1),
+        year => $3, 
+    );
+
+    print $expiry_date;
+};
+
+
+$funct->{give_month_number} = sub {
+    my ($month) = @_;
+    
     my $month_names = {
         Jan => 1,
         Feb => 2,
@@ -77,10 +93,8 @@ $funct->{check_expired} = sub {
         Dec => 12,
     };
 
-    my ($day, $month, $year) = ( $2, $month_names->{$1}, $3 );
-    print $day."-".$month."-".$year;
+    return $month_names->{$month};
 };
-
 
 $funct->{check_expired}();
 
