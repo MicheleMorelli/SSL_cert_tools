@@ -40,6 +40,14 @@ $funct->{ll} = sub {
 };
 
 
+=pod
+
+=head2 make_private_key
+
+Generates a private key and stores it in a .key file.
+
+=cut
+
 $funct->{make_private_key} = sub{
     my ( $SITECODE) = @_;
     # generating the private key
@@ -50,6 +58,13 @@ $funct->{make_private_key} = sub{
     close $fh;
 };
 
+=pod
+
+=head2 make_read_only
+
+Makes a file read only (chmod 400)
+
+=cut
 
 $funct->{make_read_only} = sub{
     my ( $SITECODE) = @_;
