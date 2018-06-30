@@ -60,7 +60,7 @@ $funct->{pretty_subject} = sub {
     
     $subject =~ m#, C=(?<country>.*?), ST=(?<state>.*?), L=(?<location>.*?), O=(?<org_name>.*?), CN=(?<cn>.*)#gi;
 
-    printf ("Common name: %s\nOrganisation name: %s\nLocation: %s\nState: %s\nCountry: %s\n", $+{cn}, $+{org_name}, $+{location}, $+{state}, $+{country});
+    return "Common name: $+{cn}\nOrganisation name: $+{org_name}\nLocation: $+{location}\nState: $+{state}\nCountry: $+{country}";
 };
 
 
@@ -117,7 +117,6 @@ $funct->{give_month_number} = sub {
 
 1;
 
-$funct->{pretty_subject}();
 
 __END__
 
