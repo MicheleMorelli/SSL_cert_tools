@@ -1,5 +1,27 @@
 package Quick_SSL;
 
+=pod
+
+=head1 Quick SSL
+
+This functions are aimed at dealing open_SSL-related tasks in a quick 
+and automated way.
+
+=head2 ll
+
+Similar to bash's ls -l, it prints the contents of the working directory,
+including the read/write privileges.
+
+=head2 make_private_key
+
+Generates a private key and stores it in a .key file.
+
+=head2 make_read_only
+
+Makes a file read only (chmod 400).
+
+=cut
+
 use strict;
 use warnings;
 use Exporter;
@@ -45,23 +67,3 @@ $funct->{make_read_only} = sub{
 1;
 
 
-__END__
-
-
-=pod
-
-=head1 Quick SSL
-
-This functions are aimed at dealing open_SSL-related tasks in a quick 
-and automated way.
-
-=head2 ll
-
-Similar to bash's ls -l, it prints the contents of the working directory,
-including the read/write privileges.
-
-=head2 make_private_key
-
-Generates a private key and stores it in a .key file.
-
-=cut
