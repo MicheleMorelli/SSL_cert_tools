@@ -51,11 +51,16 @@ $funct->{pretty_subject} = sub {
     my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
         or die "Cannot open certificate: $!";
     my $subject = $cert->subject();
+    
+    # Subject() output format:
     #jurisdictionC=##, businessCategory=#################,
     #serialNumber=########,
     #C=##, ST=######, L=###########, O=################,
     #CN=###############
-    print $subject;
+    
+    $subject =~ m#, C=(?<country>.*?), ST=(?<state>.*?), L=(?<location>.*?), O=(?<org_name>.*?), CN=(?<cn>.*)#gi;
+
+    printf ("Common name: %s\nOrganisation name: %s\nLocation: %s\nState: %s\nCountry: %s\n", $+{cn}, $+{org_name}, $+{location}, $+{state}, $+{country});
 };
 
 
@@ -112,6 +117,7 @@ $funct->{give_month_number} = sub {
 
 1;
 
+$funct->{pretty_subject}();
 
 __END__
 
