@@ -54,7 +54,7 @@ $funct->{print_subject} = sub {
 };
 
 
-$funct->{check_expired} = sub {
+$funct->{certificate_has_expired} = sub {
     my ( $SITECODE) = @_;
     my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
         or die "Cannot open certificate: $!";
@@ -70,7 +70,7 @@ $funct->{check_expired} = sub {
         year => $3, 
     );
 
-    print $expiry_date;
+    return $expiry_date < $now ;
 };
 
 
@@ -95,7 +95,7 @@ $funct->{give_month_number} = sub {
     return $month_names->{$month};
 };
 
-$funct->{check_expired}();
+print ( ($funct->{certificate_has_expired}()) ? "The Certificate has expired": "all good"); 
 
 1;
 
@@ -127,7 +127,7 @@ Makes a file read only (chmod 400).
 
 Prints the subject of a SSL certificate.
 
-=head2 check_expired
+=head2 certificate_has_expired
 
 Checks if a SSL certificate has expired. 
 
