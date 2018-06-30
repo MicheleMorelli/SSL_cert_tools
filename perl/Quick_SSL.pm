@@ -1,33 +1,14 @@
 package Quick_SSL;
 
-=pod
-
-=head1 Quick SSL
-
-This functions are aimed at dealing open_SSL-related tasks in a quick 
-and automated way.
-
-=head2 ll
-
-Similar to bash's ls -l, it prints the contents of the working directory,
-including the read/write privileges.
-
-=head2 make_private_key
-
-Generates a private key and stores it in a .key file.
-
-=head2 make_read_only
-
-Makes a file read only (chmod 400).
-
-=cut
-
 use strict;
 use warnings;
 use Exporter;
 use Crypt::OpenSSL::RSA;
 use Crypt::OpenSSL::Random;
-
+use Crypt::OpenSSL::X509;
+use DateTime;
+use Date::Parse;
+use Date::Language;
 
 our @ISA = qw/ Exporter /;
 our @EXPORT = qw/ $funct /;
@@ -64,6 +45,69 @@ $funct->{make_read_only} = sub{
     close $fh;
 };
 
+
+$funct->{print_subject} = sub {
+    my ( $SITECODE) = @_;
+    my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
+        or die "Cannot open certificate: $!";
+    my $dt = DateTime->now;
+    print $cert->notAfter() > DateTime->now();
+};
+
+
+$funct->{check_expired} = sub {
+    my ( $SITECODE) = @_;
+    my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
+        or die "Cannot open certificate: $!";
+    my $now = DateTime->now;
+    #Jun 15 13:23:00 2020 GMT
+    $cert->notAfter() =~ m#([A-Za-z]{3}) (\d\d) \d{2}:\d{2}:\d{2} (\d{4})#gi;
+    my $month_names = {
+        Jan => 1,
+        Feb => 2,
+        Mar => 3,
+        Apr => 4,
+        May => 5,
+        Jun => 6,
+        Jul => 7,
+        Aug => 8,
+        Sep => 9,
+        Oct => 10,
+        Nov => 11,
+        Dec => 12,
+    };
+
+    my ($day, $month, $year) = ( $2, $month_names->{$1}, $3 );
+    print $day."-".$month."-".$year;
+};
+
+
+$funct->{check_expired}();
+
 1;
 
 
+__END__
+
+
+=pod
+
+=head1 Quick SSL
+
+This functions are aimed at dealing open_SSL-related tasks in a quick 
+and automated way.
+
+=head2 ll
+
+Similar to bash's ls -l, it prints the contents of the working directory,
+including the read/write privileges.
+
+=head2 make_private_key
+
+Generates a private key and stores it in a .key file.
+
+=head2 make_read_only
+
+Makes a file read only (chmod 400).
+
+=cut
