@@ -4,7 +4,7 @@ use strict;
 use Crypt::OpenSSL::RSA;
 use Crypt::OpenSSL::Random;
 use Data::Dumper;
-use Custom::perl_utils;
+use Perl_utils qw( $funct );
 
 my $SITECODE = $ARGV[0];
 
@@ -21,9 +21,7 @@ close $fh;
 
 open  $fh, '<', "$SITECODE.key" 
     or die "Cannot read key $SITECODE.key: $!";
-
-chmod 400, $fh;
-
+chmod 0400, $fh;
 close $fh;
 
-$func->{ll}();
+$funct->{ll}();

@@ -1,4 +1,4 @@
-package perl_utils;
+package Perl_utils;
 
 use strict;
 use warnings;
