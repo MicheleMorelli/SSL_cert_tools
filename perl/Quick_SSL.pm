@@ -6,12 +6,23 @@ use Exporter;
 use Crypt::OpenSSL::RSA;
 use Crypt::OpenSSL::Random;
 
+=pod
+=head1 Quick_SSL
+This functions are aimed at dealing open_SSL-related tasks in a quick and 
+automated way.
+=cut
+
 our @ISA = qw/ Exporter /;
 our @EXPORT = qw/ $funct /;
 
 our $funct = {};
 
 
+=pod
+=head2 ll
+Similar to Bash's ls -l, shows the files in the . directory and shows the 
+read/write permissions.
+=cut
 $funct->{ll} = sub {
     opendir my($dh), '.' or die "cannot open dir: $!"; 
     while ( readdir $dh){
