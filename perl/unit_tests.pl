@@ -6,4 +6,4 @@ use Test::More qw/ no_plan /;
 use Data::Dumper;
 use Quick_SSL;
 
-print Dumper($f);
+is($f->{get_cert_from_file}("TEST"), $f->{get_cert_from_site}("www.google.com") );
