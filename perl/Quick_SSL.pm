@@ -2,6 +2,7 @@ package Quick_SSL;
 
 use strict;
 use warnings;
+
 use Exporter;
 use Crypt::OpenSSL::RSA;
 use Crypt::OpenSSL::Random;
@@ -129,9 +130,6 @@ $f->{get_cert_from_file} = sub {
 
 
 1;
-
-my $cert = $f->{get_cert_from_site}('www.google.com');
-print $f->{pretty_subject}($cert);
 
 
 __END__
