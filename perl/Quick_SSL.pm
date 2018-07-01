@@ -115,7 +115,8 @@ $f->{give_month_number} = sub {
 $f->{get_cert_from_site} = sub {
     my ($url) = @_;
     my ($reply, $err, $cert) = sslcat($url, 443, '/');
-    return Net::SSLeay::PEM_get_string_X509( $cert);
+    $cert = Net::SSLeay::PEM_get_string_X509( $cert);
+    return Crypt::OpenSSL::X509->new_from_string($cert);
 };
 
 
@@ -129,7 +130,7 @@ $f->{get_cert_from_file} = sub {
 
 1;
 
-my $cert = $f->{get_cert_from_site}('eprints.mdx.ac.uk');
+my $cert = $f->{get_cert_from_site}('www.google.com');
 print $f->{pretty_subject}($cert);
 
 
