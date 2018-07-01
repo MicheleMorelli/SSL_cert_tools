@@ -10,9 +10,9 @@ SITECODE=$1
 [[ -e $SITECODE.csr ]] && CSR=$(openssl req -in $SITECODE.csr -noout -modulus | md5sum)
 
 [[ $CRT == $KEY ]] && [[ $CSR == $CRT ]] && [[ $KEY == $CSR  ]] && echo "The three
-moduli are matching.Success\!" && exit 0
+moduli are matching.Success :-) " && exit 0
 
-echo "The moduli are not matching\!"
+echo "The moduli are not matching:"
 echo "CSR: $CSR"
 echo "CRT: $CRT"
 echo "KEY: $KEY"
