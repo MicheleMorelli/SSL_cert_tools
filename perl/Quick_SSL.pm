@@ -38,9 +38,9 @@ $f->{make_private_key} = sub{
 
 
 $f->{make_read_only} = sub{
-    my ( $SITECODE) = @_;
-    open my  $fh, '<', "$SITECODE.key" 
-        or die "Cannot read key $SITECODE.key: $!";
+    my ( $file) = @_;
+    open my  $fh, '<', "$file" 
+        or die "Cannot read key $file: $!";
     chmod 0400, $fh;
     close $fh;
 };
@@ -63,18 +63,14 @@ $f->{pretty_subject} = sub {
 
 
 $f->{will_expire_in_one_month} = sub{
-    my ( $SITECODE) = @_;
-    my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
-        or die "Cannot open certificate: $!";
+    my ( $cert) = @_;
     my $one_month_in_seconds = 2592000;
     return $cert->checkend($one_month_in_seconds);
 };
 
 
 $f->{has_expired} = sub {
-    my ( $SITECODE) = @_;
-    my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
-        or die "Cannot open certificate: $!";
+    my ( $cert) = @_;
     my $now = DateTime->now;
     
     # Current format:
@@ -108,7 +104,6 @@ $f->{give_month_number} = sub {
         Nov => 11,
         Dec => 12,
     };
-
     return $month_names->{$month};
 };
 
