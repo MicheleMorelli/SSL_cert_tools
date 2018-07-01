@@ -6,4 +6,16 @@ use Test::More qw/ no_plan /;
 use Data::Dumper;
 use Quick_SSL;
 
-is($f->{get_cert_from_file}("TEST"), $f->{get_cert_from_site}("www.google.com") );
+
+# Checking if the 2 get_cert methods return the same cert
+is( $f->{get_cert_from_file}("TEST"), 
+    $f->{get_cert_from_site}("www.google.com"),
+    "Is it the same cert?"    
+);
+
+
+# pretty subject test
+is ($f->{pretty_subject}($f->{get_cert_from_file}("TEST")),
+    $f->{pretty_subject}($f->{get_cert_from_site}("www.google.com")),
+    "Is pretty subject the same?"
+);
