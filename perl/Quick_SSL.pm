@@ -7,8 +7,7 @@ use Crypt::OpenSSL::RSA;
 use Crypt::OpenSSL::Random;
 use Crypt::OpenSSL::X509;
 use DateTime;
-use Date::Parse;
-use Date::Language;
+use Net::SSLeay qw/sslcat/;
 
 our @ISA = qw/ Exporter /;
 our @EXPORT = qw/ $f /;
@@ -47,9 +46,7 @@ $f->{make_read_only} = sub{
 
 
 $f->{pretty_subject} = sub {
-    my ( $SITECODE) = @_;
-    my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
-        or die "Cannot open certificate: $!";
+    my ( $cert) = @_;
     my $subject = $cert->subject();
     
     # Subject() output format:
@@ -58,7 +55,7 @@ $f->{pretty_subject} = sub {
     #C=##, ST=######, L=###########, O=################,
     #CN=###############
     
-    $subject =~ m#, C=(?<country>.*?), ST=(?<state>.*?), L=(?<location>.*?), O=(?<org_name>.*?), CN=(?<cn>.*)#gi;
+    $subject =~ m#(:?, )?C=(?<country>.*?), ST=(?<state>.*?), L=(?<location>.*?), O=(?<org_name>.*?), CN=(?<cn>.*)#gi;
 
     return "Common name: $+{cn}\nOrganisation name: $+{org_name}\nLocation: $+{location}\nState: $+{state}\nCountry: $+{country}";
 };
@@ -115,7 +112,25 @@ $f->{give_month_number} = sub {
 };
 
 
+$f->{get_cert_from_site} = sub {
+    my ($url) = @_;
+    my ($reply, $err, $cert) = sslcat($url, 443, '/');
+    return Net::SSLeay::PEM_get_string_X509( $cert);
+};
+
+
+$f->{get_cert_from_file} = sub {
+    my ($SITECODE) = @_;
+    my $cert =  Crypt::OpenSSL::X509->new_from_file("$SITECODE.crt") 
+        or die "Cannot open certificate: $!";
+    return $cert;
+};
+
+
 1;
+
+my $cert = $f->{get_cert_from_site}('eprints.mdx.ac.uk');
+print $f->{pretty_subject}($cert);
 
 
 __END__
@@ -152,5 +167,13 @@ Checks if a SSL certificate has expired.
 =head2 give_month_number
 
 Checks if a SSL certificate has expired. 
+
+=head2 get_cert_from_site
+
+Takes an URL as an argument, and returns an SSL certificate. 
+
+=head2 get_cert_from_file
+
+Returns an SSL cetificate from a file, and takes a sitecode as an argument. 
 
 =cut
