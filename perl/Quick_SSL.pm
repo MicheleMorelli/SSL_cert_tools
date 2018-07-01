@@ -11,12 +11,12 @@ use Date::Parse;
 use Date::Language;
 
 our @ISA = qw/ Exporter /;
-our @EXPORT = qw/ $funct /;
+our @EXPORT = qw/ $f /;
 
-our $funct = {};
+our $f = {};
 
 
-$funct->{ll} = sub {
+$f->{ll} = sub {
     opendir my($dh), '.' or die "cannot open dir: $!"; 
     while ( readdir $dh){
         my $mode = (stat($_))[2]; 
@@ -26,7 +26,7 @@ $funct->{ll} = sub {
 };
 
 
-$funct->{make_private_key} = sub{
+$f->{make_private_key} = sub{
     my ( $SITECODE) = @_;
     # generating the private key
     my $rsa = Crypt::OpenSSL::RSA ->generate_key(2048)->get_private_key_string();
@@ -37,7 +37,7 @@ $funct->{make_private_key} = sub{
 };
 
 
-$funct->{make_read_only} = sub{
+$f->{make_read_only} = sub{
     my ( $SITECODE) = @_;
     open my  $fh, '<', "$SITECODE.key" 
         or die "Cannot read key $SITECODE.key: $!";
@@ -46,7 +46,7 @@ $funct->{make_read_only} = sub{
 };
 
 
-$funct->{pretty_subject} = sub {
+$f->{pretty_subject} = sub {
     my ( $SITECODE) = @_;
     my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
         or die "Cannot open certificate: $!";
@@ -64,7 +64,7 @@ $funct->{pretty_subject} = sub {
 };
 
 
-$funct->{will_expire_in_one_month} = sub{
+$f->{will_expire_in_one_month} = sub{
     my ( $SITECODE) = @_;
     my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
         or die "Cannot open certificate: $!";
@@ -73,7 +73,7 @@ $funct->{will_expire_in_one_month} = sub{
 };
 
 
-$funct->{has_expired} = sub {
+$f->{has_expired} = sub {
     my ( $SITECODE) = @_;
     my $cert =  Crypt::OpenSSL::X509->new_from_file("TEST.crt") 
         or die "Cannot open certificate: $!";
@@ -85,7 +85,7 @@ $funct->{has_expired} = sub {
 
     my $expiry_date = DateTime->new(
         day=> $2,
-        month => $funct->{give_month_number}($1),
+        month => $f->{give_month_number}($1),
         year => $3, 
     );
 
@@ -93,7 +93,7 @@ $funct->{has_expired} = sub {
 };
 
 
-$funct->{give_month_number} = sub {
+$f->{give_month_number} = sub {
     my ($month) = @_;
     
     my $month_names = {
