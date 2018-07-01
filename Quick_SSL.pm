@@ -120,8 +120,8 @@ $f->{get_cert_from_site} = sub {
 
 
 $f->{get_cert_from_file} = sub {
-    my ($SITECODE) = @_;
-    my $cert =  Crypt::OpenSSL::X509->new_from_file("$SITECODE.crt") 
+    my ($cert_file) = @_;
+    my $cert =  Crypt::OpenSSL::X509->new_from_file($cert_file) 
         or die "Cannot open certificate: $!";
     return $cert;
 };
@@ -129,6 +129,8 @@ $f->{get_cert_from_file} = sub {
 
 1;
 
+my $cert = $f->{get_cert_from_site}("www.google.com");
+print $f->{pretty_subject}($cert);
 
 __END__
 
