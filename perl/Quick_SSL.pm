@@ -27,11 +27,11 @@ $f->{ll} = sub {
 
 
 $f->{make_private_key} = sub{
-    my ( $SITECODE) = @_;
+    my ( $key_name) = @_;
     # generating the private key
     my $rsa = Crypt::OpenSSL::RSA ->generate_key(2048)->get_private_key_string();
-    open my $fh, '>', "$SITECODE.key" 
-        or die "Cannot create private key $SITECODE.key: $!";
+    open my $fh, '>', "$key_name" 
+        or die "Cannot create private key $key_name: $!";
     print $fh $rsa;
     close $fh;
 };
