@@ -117,6 +117,9 @@ $f->{get_cert_from_site} = sub {
     my ($url) = @_;
     my ($reply, $err, $cert) = sslcat($url, 443, '/');
     $cert = Net::SSLeay::PEM_get_string_X509( $cert);
+#    open my $fh, '>', "TEST.crt";
+#    print $fh $cert;
+#    close $fh;
     return Crypt::OpenSSL::X509->new_from_string($cert);
 };
 
@@ -130,7 +133,6 @@ $f->{get_cert_from_file} = sub {
 
 
 1;
-
 
 
 __END__
