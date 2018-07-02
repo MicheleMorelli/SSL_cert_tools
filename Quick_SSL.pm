@@ -51,7 +51,7 @@ sub make_read_only {
 
 sub pretty_subject  {
     my $self = shift;
-    my ( $cert) = @_;
+    my ( $cert ) = @_;
     my $subject = $cert->subject();
     
     # Subject() output format:
@@ -62,7 +62,24 @@ sub pretty_subject  {
     
     $subject =~ m#(:?, )?C=(?<country>.*?), ST=(?<state>.*?), L=(?<location>.*?), O=(?<org_name>.*?), CN=(?<cn>.*)#gi;
 
-    return "Common name: $+{cn}\nOrganisation name: $+{org_name}\nLocation: $+{location}\nState: $+{state}\nCountry: $+{country}";
+    return "DNS Name (CN): $+{cn}\nOrganisation (O): $+{org_name}\nLocation (L): $+{location}\nState (S): $+{state}\nCountry (C): $+{country}";
+}
+
+
+sub make_email{
+    my ($self, $cert) = @_;
+    open my $fh, '<', "template" 
+        or die "cannot read the file: $!";
+    my $pretty_subject = $self->pretty_subject($cert);
+    print STDERR $pretty_subject."\n";
+    while (my $line = <$fh>){
+        $line =~ s/<CSR>/LLIFHSGDHJFGDKSGKFJFJS/;
+        $line =~ s/<NAME>/GINO/;
+        $line =~ s/<DOMAIN>/www.test.com/;
+        $line =~ s/<PRETTY_SUBJECT>/$pretty_subject/;
+        print $line;
+    }
+    close $fh;
 }
 
 
@@ -174,8 +191,9 @@ sub get_all_certs_expiry_dates {
 sub print_sorted_expiry_dates {
     my ($self, $list_file) = @_;
     my $expiry_dates = $self->get_all_certs_expiry_dates($list_file);
+    print "DATE".(" "x9)."WEBSITE\n";
     for my $key (sort {$expiry_dates->{$a} <=> $expiry_dates->{$b}} keys %$expiry_dates){
-        print $self->pretty_datetime( $expiry_dates->{$key} )." =======> ".$key."\n";
+        print $self->pretty_datetime( $expiry_dates->{$key} )." | ".$key."\n";
     }
 }
 
@@ -251,5 +269,9 @@ Sorts the hashref containing the FQDNS and the expiry dates of the certificate a
 
 Takes a datetime object as an argument, and returns a a string in the dd-mm-yyyy 
 format.
+
+=head2 make_email
+
+Prints the CSR email for the contract renewal.
 
 =cut
