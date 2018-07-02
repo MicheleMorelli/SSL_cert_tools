@@ -175,16 +175,19 @@ sub print_sorted_expiry_dates {
     my ($self, $list_file) = @_;
     my $expiry_dates = $self->get_all_certs_expiry_dates($list_file);
     for my $key (sort {$expiry_dates->{$a} <=> $expiry_dates->{$b}} keys %$expiry_dates){
-        print $expiry_dates->{$key}." =======> ".$key."\n";
+        print $self->pretty_datetime( $expiry_dates->{$key} )." =======> ".$key."\n";
     }
 }
 
 
 sub pretty_datetime {
     my ($self, $dt) = @_;
-    my $pretty_dt = $dt->{day}."-".$dt->{month}."-".$dt->{year};
+    my $day_padding = ($dt->day < 10) ? 0 :"";
+    my $month_padding = ($dt->month < 10) ? 0 :"";
+    my $pretty_dt = $day_padding.$dt->day."-".$month_padding.$dt->month."-".$dt->year;
     return $pretty_dt;
 }
+
 
 1;
 
