@@ -157,15 +157,18 @@ sub get_urls_from_file {
 sub get_all_certs_expiry_dates {
     my $self = shift;
     my ($file) = @_;
+    my $SSL_certs = {};
     for my $site ($self->get_urls_from_file($file)){
         print STDERR "Now processing $site\n";
         my $cert = $self->get_cert_from_site($site);
         # skips the site if it is not https
         next unless defined $cert;
-        print "- ".$self->get_expiry_datetime($cert)." ====> ".$site."\n";   
-        #print "- ".$cert->notAfter()." ====> ".$site."\n";   
+        $SSL_certs->{$site} = $self->get_expiry_datetime($cert);
     }
-};
+    #returns a hash where they sites FQDNs are the keys, and the datestamps
+    #the values.
+    return $SSL_certs;
+}
 
 
 1;
@@ -220,6 +223,6 @@ Takes a file containing a list of urls, and returns a @list of urls.
 
 =head2 get_all_certs_expiry_dates
 
-Returns the expiry dates of all the sites as a sorted list.
+Returns the expiry dates of all the sites as a hashref.
 
 =cut
