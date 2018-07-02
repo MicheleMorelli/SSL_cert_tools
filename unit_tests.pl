@@ -23,6 +23,6 @@ is ($f->{pretty_subject}($f->{get_cert_from_file}("TEST.crt")),
 
 # pretty subject test 2
 is ($f->{pretty_subject}($f->{get_cert_from_file}("TEST.crt")),
-    "",
+    "Common name: *.squarespace.com\nOrganisation name: Squarespace, Inc., OU=Web Services\nLocation: New York\nState: New York\nCountry: US",
     "Is the pretty subject string the same?"
 );
