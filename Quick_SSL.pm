@@ -66,11 +66,18 @@ sub pretty_subject  {
 }
 
 
+sub read_csr {
+    my ($self, $file) = @_;
+    my $csr = `openssl req -in $file -noout -text`;
+    print $csr;
+}
+
+
 sub make_email{
-    my ($self, $cert) = @_;
+    my ($self, $csr) = @_;
     open my $fh, '<', "template" 
         or die "cannot read the file: $!";
-    my $pretty_subject = $self->pretty_subject($cert);
+    my $pretty_subject = $self->pretty_subject($csr);
     print STDERR $pretty_subject."\n";
     while (my $line = <$fh>){
         $line =~ s/<CSR>/LLIFHSGDHJFGDKSGKFJFJS/;

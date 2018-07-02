@@ -12,5 +12,7 @@ my $c = Quick_SSL->new();
 #TODO: make CSR!
 #$c->ll();
 #$c->print_sorted_expiry_dates("small.list")
-my $cert = $c->get_cert_from_file("TEST.crt");
-$c->make_email($cert);
+#my $cert = $c->get_cert_from_file("TEST.crt");
+#$c->make_email($cert);
+
+$c->read_csr("CREST.csr");
