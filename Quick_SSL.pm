@@ -69,20 +69,23 @@ $f->{will_expire_in_one_month} = sub{
 };
 
 
-$f->{has_expired} = sub {
-    my ( $cert) = @_;
-    my $now = DateTime->now;
-    
+$f->{get_expiry_datetime} = sub {
+    my ($cert) = @_;
     # Current format:
     # Jun 15 13:23:00 2020 GMT
     $cert->notAfter() =~ m#([A-Za-z]{3}) (\d\d) \d{2}:\d{2}:\d{2} (\d{4})#gi;
-
-    my $expiry_date = DateTime->new(
+    return DateTime->new(
         day=> $2,
         month => $f->{give_month_number}($1),
-        year => $3, 
+        year => $3,
     );
+};
 
+
+$f->{has_expired} = sub {
+    my ( $cert) = @_;
+    my $now = DateTime->now;
+    my $expiry_date = $f->{get_expiry_datetime}($cert);
     return $expiry_date < $now ;
 };
 
@@ -143,8 +146,10 @@ $f->{get_all_certs_expiry_dates} = sub {
     my ($file) = @_;
     for my $site ($f->{get_urls_from_file}($file)){
         my $cert = $f->{get_cert_from_site}($site);
+        # skips the site if it is not https
         next unless defined $cert;
-        print "- ".$site." =====> ".$cert->notAfter()."\n";   
+        print "- ".$f->{get_expiry_datetime}($cert)." ====> ".$site."\n";   
+        #print "- ".$cert->notAfter()." ====> ".$site."\n";   
     }
 };
 
