@@ -179,6 +179,13 @@ sub print_sorted_expiry_dates {
     }
 }
 
+
+sub pretty_datetime {
+    my ($self, $dt) = @_;
+    my $pretty_dt = $dt->{day}."-".$dt->{month}."-".$dt->{year};
+    return $pretty_dt;
+}
+
 1;
 
 
@@ -236,5 +243,10 @@ Returns the expiry dates of all the sites as a hashref.
 =head2 print_sorted_expiry_dates
 
 Sorts the hashref containing the FQDNS and the expiry dates of the certificate associated to it, and prints them.
+
+=head2 pretty_datetime
+
+Takes a datetime object as an argument, and returns a a string in the dd-mm-yyyy 
+format.
 
 =cut
