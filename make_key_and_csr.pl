@@ -1,13 +1,12 @@
 #! /usr/bin/perl -w
 
 use strict;
-use Quick_SSL qw/ $f /;
-use GetOpt::Long qw/ GetOptions /;
-Getopt::Long::Configure qw/ gnu_getopt /;
+use Quick_SSL;
 
 my $SITECODE = $ARGV[0];
 
-$f->{make_private_key}("$SITECODE.key");
-$f->{make_read_only}("$SITECODE.key");
+my $c = Quick_SSL->new();
+#$c->make_private_key("$SITECODE.key");
+#$c->make_read_only("$SITECODE.key");
 #TODO: make CSR!
-$f->{ll}();
+$c->ll();

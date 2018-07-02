@@ -171,11 +171,6 @@ sub get_all_certs_expiry_dates {
 1;
 
 
-get_all_certs_expiry_dates("test.list");
-
-
-
-
 __END__
 
 
