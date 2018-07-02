@@ -115,7 +115,7 @@ $f->{get_cert_from_site} = sub {
 #    open my $fh, '>', "TEST.crt";
 #    print $fh $cert;
 #    close $fh;
-    return Crypt::OpenSSL::X509->new_from_string($cert);
+    return (defined $cert) ? Crypt::OpenSSL::X509->new_from_string($cert) : $cert;
 };
 
 
@@ -139,14 +139,19 @@ $f->{get_urls_from_file} = sub {
     return @urls;
 };
 
+$f->{get_all_certs_expiry_dates} = sub {
+    my ($file) = @_;
+    for my $site ($f->{get_urls_from_file}($file)){
+        my $cert = $f->{get_cert_from_site}($site);
+        next unless defined $cert;
+        print "- ".$site." =====> ".$cert->notAfter()."\n";   
+    }
+};
+
 
 1;
 
-my @a = $f->{get_urls_from_file}("test.list");
-print @a;
-
-
-
+$f->{get_all_certs_expiry_dates}("test.list");
 
 __END__
 
