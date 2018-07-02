@@ -173,9 +173,9 @@ sub get_all_certs_expiry_dates {
 
 sub print_sorted_expiry_dates {
     my ($self, $list_file) = @_;
-    my $gg = $c->get_all_certs_expiry_dates($list_file);
-    for my $key (sort {$a <=> $b} keys %$gg){
-        print $gg->{$key}." =======> ".$key."\n";
+    my $expiry_dates = $self->get_all_certs_expiry_dates($list_file);
+    for my $key (sort {$expiry_dates->{$a} <=> $expiry_dates->{$b}} keys %$expiry_dates){
+        print $expiry_dates->{$key}." =======> ".$key."\n";
     }
 }
 
@@ -232,5 +232,9 @@ Takes a file containing a list of urls, and returns a @list of urls.
 =head2 get_all_certs_expiry_dates
 
 Returns the expiry dates of all the sites as a hashref.
+
+=head2 print_sorted_expiry_dates
+
+Sorts the hashref containing the FQDNS and the expiry dates of the certificate associated to it, and prints them.
 
 =cut
