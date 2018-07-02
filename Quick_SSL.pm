@@ -171,6 +171,14 @@ sub get_all_certs_expiry_dates {
 }
 
 
+sub print_sorted_expiry_dates {
+    my ($self, $list_file) = @_;
+    my $gg = $c->get_all_certs_expiry_dates($list_file);
+    for my $key (sort {$a <=> $b} keys %$gg){
+        print $gg->{$key}." =======> ".$key."\n";
+    }
+}
+
 1;
 
 
