@@ -3,30 +3,32 @@ package Quick_SSL;
 use strict;
 use warnings;
 
-use Exporter;
 use Crypt::OpenSSL::RSA;
 use Crypt::OpenSSL::Random;
 use Crypt::OpenSSL::X509;
 use DateTime;
 use Net::SSLeay qw/sslcat/;
 
-our @ISA = qw/ Exporter /;
-our @EXPORT = qw/ $f /;
 
-our $f = {};
+sub new {
+    my $class = shift;
+    my $self = {};
+    bless $self, $class;
+}
 
-
-$f->{ll} = sub {
+sub ll {
+    my $self = shift;
     opendir my($dh), '.' or die "cannot open dir: $!"; 
     while ( readdir $dh){
         my $mode = (stat($_))[2]; 
         printf "%04o   $_\n", $mode & 07777;
     }
     closedir $dh;
-};
+}
 
 
-$f->{make_private_key} = sub{
+sub make_private_key {
+    my $self = shift;
     my ( $key_name) = @_;
     # generating the private key
     my $rsa = Crypt::OpenSSL::RSA ->generate_key(2048)->get_private_key_string();
@@ -34,19 +36,21 @@ $f->{make_private_key} = sub{
         or die "Cannot create private key $key_name: $!";
     print $fh $rsa;
     close $fh;
-};
+}
 
 
-$f->{make_read_only} = sub{
+sub make_read_only {
+    my $self = shift;
     my ( $file) = @_;
     open my  $fh, '<', "$file" 
         or die "Cannot read key $file: $!";
     chmod 0400, $fh;
     close $fh;
-};
+}
 
 
-$f->{pretty_subject} = sub {
+sub pretty_subject  {
+    my $self = shift;
     my ( $cert) = @_;
     my $subject = $cert->subject();
     
@@ -59,38 +63,42 @@ $f->{pretty_subject} = sub {
     $subject =~ m#(:?, )?C=(?<country>.*?), ST=(?<state>.*?), L=(?<location>.*?), O=(?<org_name>.*?), CN=(?<cn>.*)#gi;
 
     return "Common name: $+{cn}\nOrganisation name: $+{org_name}\nLocation: $+{location}\nState: $+{state}\nCountry: $+{country}";
-};
+}
 
 
-$f->{will_expire_in_one_month} = sub{
+sub will_expire_in_one_month {
+    my $self = shift;
     my ( $cert) = @_;
     my $one_month_in_seconds = 2592000;
     return $cert->checkend($one_month_in_seconds);
-};
+}
 
 
-$f->{get_expiry_datetime} = sub {
+sub get_expiry_datetime {
+    my $self = shift;
     my ($cert) = @_;
     # Current format:
     # Jun 15 13:23:00 2020 GMT
     $cert->notAfter() =~ m#([A-Za-z]{3}) +(\d\d?) \d{2}:\d{2}:\d{2} (\d{4})#gi;
     return DateTime->new(
         day=> $2,
-        month => $f->{give_month_number}($1),
+        month => $self->give_month_number($1),
         year => $3,
     );
-};
+}
 
 
-$f->{has_expired} = sub {
+sub has_expired {
+    my $self = shift;
     my ( $cert) = @_;
     my $now = DateTime->now;
-    my $expiry_date = $f->{get_expiry_datetime}($cert);
+    my $expiry_date = $self->get_expiry_datetime($cert);
     return $expiry_date < $now ;
-};
+}
 
 
-$f->{give_month_number} = sub {
+sub give_month_number {
+    my $self = shift;
     my ($month) = @_;
     
     my $month_names = {
@@ -109,10 +117,11 @@ $f->{give_month_number} = sub {
     };
     print STDERR $month." is not in $month_names>>>>>>" unless exists $month_names->{$month};
     return $month_names->{$month};
-};
+}
 
 
-$f->{get_cert_from_site} = sub {
+sub get_cert_from_site {
+    my $self = shift;
     my ($url) = @_;
     my ($reply, $err, $cert) = sslcat($url, 443, '/');
     $cert = Net::SSLeay::PEM_get_string_X509( $cert);
@@ -120,18 +129,20 @@ $f->{get_cert_from_site} = sub {
 #    print $fh $cert;
 #    close $fh;
     return (defined $cert) ? Crypt::OpenSSL::X509->new_from_string($cert) : $cert;
-};
+}
 
 
-$f->{get_cert_from_file} = sub {
+sub get_cert_from_file {
+    my $self = shift;
     my ($cert_file) = @_;
     my $cert =  Crypt::OpenSSL::X509->new_from_file($cert_file) 
         or die "Cannot open certificate: $!";
     return $cert;
-};
+}
 
 
-$f->{get_urls_from_file} = sub {
+sub get_urls_from_file {
+    my $self = shift;
     my ($file) = @_;
     my @urls = ();
     open my $fh, '<', $file 
@@ -141,16 +152,17 @@ $f->{get_urls_from_file} = sub {
         push @urls, $line;
     } 
     return @urls;
-};
+}
 
-$f->{get_all_certs_expiry_dates} = sub {
+sub get_all_certs_expiry_dates {
+    my $self = shift;
     my ($file) = @_;
-    for my $site ($f->{get_urls_from_file}($file)){
+    for my $site ($self->get_urls_from_file($file)){
         print STDERR "Now processing $site\n";
-        my $cert = $f->{get_cert_from_site}($site);
+        my $cert = $self->get_cert_from_site($site);
         # skips the site if it is not https
         next unless defined $cert;
-        print "- ".$f->{get_expiry_datetime}($cert)." ====> ".$site."\n";   
+        print "- ".$self->get_expiry_datetime($cert)." ====> ".$site."\n";   
         #print "- ".$cert->notAfter()." ====> ".$site."\n";   
     }
 };
@@ -159,7 +171,7 @@ $f->{get_all_certs_expiry_dates} = sub {
 1;
 
 
-$f->{get_all_certs_expiry_dates}("test.list");
+get_all_certs_expiry_dates("test.list");
 
 
 
@@ -210,5 +222,9 @@ Returns an SSL cetificate from a file, and takes a sitecode as an argument.
 =head2 get_urls_from_file
 
 Takes a file containing a list of urls, and returns a @list of urls.
+
+=head2 get_all_certs_expiry_dates
+
+Returns the expiry dates of all the sites as a sorted list.
 
 =cut
