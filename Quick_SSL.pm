@@ -73,7 +73,7 @@ $f->{get_expiry_datetime} = sub {
     my ($cert) = @_;
     # Current format:
     # Jun 15 13:23:00 2020 GMT
-    $cert->notAfter() =~ m#([A-Za-z]{3}) (\d\d) \d{2}:\d{2}:\d{2} (\d{4})#gi;
+    $cert->notAfter() =~ m#([A-Za-z]{3}) +(\d\d?) \d{2}:\d{2}:\d{2} (\d{4})#gi;
     return DateTime->new(
         day=> $2,
         month => $f->{give_month_number}($1),
@@ -107,6 +107,7 @@ $f->{give_month_number} = sub {
         Nov => 11,
         Dec => 12,
     };
+    print STDERR $month." is not in $month_names>>>>>>" unless exists $month_names->{$month};
     return $month_names->{$month};
 };
 
@@ -145,6 +146,7 @@ $f->{get_urls_from_file} = sub {
 $f->{get_all_certs_expiry_dates} = sub {
     my ($file) = @_;
     for my $site ($f->{get_urls_from_file}($file)){
+        print STDERR "Now processing $site\n";
         my $cert = $f->{get_cert_from_site}($site);
         # skips the site if it is not https
         next unless defined $cert;
@@ -156,7 +158,11 @@ $f->{get_all_certs_expiry_dates} = sub {
 
 1;
 
+
 $f->{get_all_certs_expiry_dates}("test.list");
+
+
+
 
 __END__
 
