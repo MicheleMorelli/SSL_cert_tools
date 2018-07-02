@@ -127,7 +127,25 @@ $f->{get_cert_from_file} = sub {
 };
 
 
+$f->{get_urls_from_file} = sub {
+    my ($file) = @_;
+    my @urls = ();
+    open my $fh, '<', $file 
+        or die "Cannot open $file:$!";
+    while (my $line=<$fh>){
+        chomp($line);
+        push @urls, $line;
+    } 
+    return @urls;
+};
+
+
 1;
+
+my @a = $f->{get_urls_from_file}("test.list");
+print @a;
+
+
 
 
 __END__
@@ -172,5 +190,9 @@ Takes an URL as an argument, and returns an SSL certificate.
 =head2 get_cert_from_file
 
 Returns an SSL cetificate from a file, and takes a sitecode as an argument. 
+
+=head2 get_urls_from_file
+
+Takes a file containing a list of urls, and returns a @list of urls.
 
 =cut
