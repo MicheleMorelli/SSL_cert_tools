@@ -2,7 +2,7 @@
 
 use strict;
 use Quick_SSL;
-
+use Data::Dumper;
 #my $SITECODE = $ARGV[0];
 
 my $c = Quick_SSL->new();
@@ -15,4 +15,4 @@ my $c = Quick_SSL->new();
 #my $cert = $c->get_cert_from_file("TEST.crt");
 #$c->make_email($cert);
 
-$c->get_csr_subject("TEST.csr");
+print Dumper $c->get_csr_subject("TEST.csr");

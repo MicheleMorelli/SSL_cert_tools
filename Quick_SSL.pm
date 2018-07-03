@@ -69,29 +69,25 @@ sub pretty_subject  {
 
 sub get_csr_subject {
     my ($self, $file) = @_;
+    
     my $csr = `openssl req -in $file -noout -text`;
-    $csr =~ m#(Subject: .*)#;
+    $csr =~ m#Subject: (.*)#;
     my @subject_array = split /,/, $1;
-    my $subject = {};
+    
+    my $subject = {}; # saving the csr's subject fields in a hash
+    my @fields = qw/ C O OU CN ST L /;
+    # vivify all fields (possibly redundant?)
+    $subject->{$_} = "" for (@fields);
+    
     for my $element (@subject_array){
-        if ($element =~ m/C=(?<C>.*)/){
-            $subject->{C} = $+{C};
+        for my $field (@fields){
+            if ($element =~ m/$field=(?<$field>.*),?/){
+                $subject->{$field} = $+{$field};
+                last;
+            }
         }
-        elsif ($element =~ m/O=(?<O>.*)/){
-            $subject->{O} = $+{O};
-        }
-        elsif ($element =~ m/CN=(?<CN>.*)/){
-            $subject->{CN} = $+{CN};
-        }
-        elsif ($element =~ m/OU=(?<OU>.*)/){
-            $subject->{OU} = $+{OU};
-        }
-        elsif ($element =~ m/ST=(?<ST>.*)/){
-            $subject->{ST} = $+{ST};
-        }
-    }
-
-    print Dumper($subject);
+   }
+   return $subject # as an hashref 
 }
 
 
