@@ -8,6 +8,7 @@ use Crypt::OpenSSL::Random;
 use Crypt::OpenSSL::X509;
 use DateTime;
 use Net::SSLeay qw/sslcat/;
+use Data::Dumper;
 
 
 sub new {
@@ -66,10 +67,31 @@ sub pretty_subject  {
 }
 
 
-sub read_csr {
+sub get_csr_subject {
     my ($self, $file) = @_;
     my $csr = `openssl req -in $file -noout -text`;
-    print $csr;
+    $csr =~ m#(Subject: .*)#;
+    my @subject_array = split /,/, $1;
+    my $subject = {};
+    for my $element (@subject_array){
+        if ($element =~ m/C=(?<C>.*)/){
+            $subject->{C} = $+{C};
+        }
+        elsif ($element =~ m/O=(?<O>.*)/){
+            $subject->{O} = $+{O};
+        }
+        elsif ($element =~ m/CN=(?<CN>.*)/){
+            $subject->{CN} = $+{CN};
+        }
+        elsif ($element =~ m/OU=(?<OU>.*)/){
+            $subject->{OU} = $+{OU};
+        }
+        elsif ($element =~ m/ST=(?<ST>.*)/){
+            $subject->{ST} = $+{ST};
+        }
+    }
+
+    print Dumper($subject);
 }
 
 

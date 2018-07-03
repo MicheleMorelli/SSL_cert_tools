@@ -15,4 +15,4 @@ my $c = Quick_SSL->new();
 #my $cert = $c->get_cert_from_file("TEST.crt");
 #$c->make_email($cert);
 
-$c->read_csr("CREST.csr");
+$c->get_csr_subject("TEST.csr");
