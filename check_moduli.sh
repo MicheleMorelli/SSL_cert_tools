@@ -3,8 +3,8 @@
 # Checks whether the CRT, the KEY and the CSR have the same modulus.
 
 # Check whether the sitecode was specified
-[[ $# -ne 1 ]] && echo 'ERROR: A sitecode must be passed as a value.
-Terminating..' && exit 1
+[[ $# -ne 1 ]] && echo 'ERROR: A sitecode must be passed as a value. Terminating..' && exit 1
+
 SITECODE=$1
 
 [[ -e $SITECODE.crt ]] && CRT=$(openssl x509 -in $SITECODE.crt -noout -modulus | md5sum) 
