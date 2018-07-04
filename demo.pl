@@ -7,12 +7,9 @@ use Data::Dumper;
 
 my $c = Quick_SSL->new();
 
-#$c->make_private_key("$SITECODE.key");
-#$c->make_read_only("$SITECODE.key");
-#TODO: make CSR!
-#$c->ll();
-#$c->print_sorted_expiry_dates("small.list")
-#my $cert = $c->get_cert_from_file("TEST.crt");
+#$c->print_sorted_expiry_dates("list.list")
+#my $cert = $c->get_cert_from_site("research.gold.ac.uk");
 #$c->make_email($cert);
 
-print Dumper $c->get_csr_subject("TEST.csr");
+print $c->get_subject("TEST.csr");
+#print $cert->as_string();

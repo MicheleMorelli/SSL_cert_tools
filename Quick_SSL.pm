@@ -67,11 +67,24 @@ sub pretty_subject  {
 }
 
 
-sub get_csr_subject {
+sub get_subject {
     my ($self, $file) = @_;
-    
-    my $csr = `openssl req -in $file -noout -text`;
-    $csr =~ m#Subject: (.*)#;
+    # accepts both a csr or a actual SSL certificate
+    my $csr_or_cert =  ""; 
+    open my $fh, '<', $file 
+        or die "cannot open the file: $!";
+    while (<$fh>){
+        $csr_or_cert =  (m/-----BEGIN CERTIFICATE REQUEST-----/i) ? 
+                        `openssl req -in $file -noout -text`:
+                        (m/-----BEGIN CERTIFICATE-----/i) ? 
+                        `openssl x509 -in $file -noout -text`: 
+                        undef;
+        last if defined $csr_or_cert;
+    }
+    close $fh;
+    die "No CSR or CRT found: $!" unless defined $csr_or_cert;
+    print STDERR Dumper ("INTERMEDIATE!".$csr_or_cert);
+    $csr_or_cert =~ m#Subject: (.*)#;
     my @subject_array = split /,/, $1;
     
     my $subject = {}; # saving the csr's subject fields in a hash
@@ -201,7 +214,7 @@ sub get_all_certs_expiry_dates {
     my ($file) = @_;
     my $SSL_certs = {};
     for my $site ($self->get_urls_from_file($file)){
-        print STDERR "Now processing $site\n";
+        #print STDERR "Now processing $site\n";
         my $cert = $self->get_cert_from_site($site);
         # skips the site if it is not https
         next unless defined $cert;
@@ -298,5 +311,9 @@ format.
 =head2 make_email
 
 Prints the CSR email for the contract renewal.
+
+=head2 get_subject
+
+Takes either a CSR or a certificate stored in a file and returns an hashref containing the fields of the subject.
 
 =cut
