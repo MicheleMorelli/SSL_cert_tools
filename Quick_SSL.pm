@@ -51,19 +51,9 @@ sub make_read_only {
 
 
 sub pretty_subject  {
-    my $self = shift;
-    my ( $cert ) = @_;
-    my $subject = $cert->subject();
-    
-    # Subject() output format:
-    #jurisdictionC=##, businessCategory=#################,
-    #serialNumber=########,
-    #C=##, ST=######, L=###########, O=################,
-    #CN=###############
-    
-    $subject =~ m#(:?, )?C=(?<country>.*?), ST=(?<state>.*?), L=(?<location>.*?), O=(?<org_name>.*?), CN=(?<cn>.*)#gi;
-
-    return "DNS Name (CN): $+{cn}\nOrganisation (O): $+{org_name}\nLocation (L): $+{location}\nState (S): $+{state}\nCountry (C): $+{country}";
+    my ( $self, $file ) = @_; # takes an hashref containing all the elements of the subject
+    my $subject = $self->get_subject($file);
+    return "DNS Name (CN): $subject->{CN}\nOrganisation (O): $subject->{O}\nOrganisation Unit (OU): $subject->{OU}\nLocation (L): $subject->{L}\nState (S): $subject->{S}\nCountry (C): $subject->{C}";
 }
 
 
@@ -73,17 +63,15 @@ sub get_subject {
     my $csr_or_cert =  ""; 
     open my $fh, '<', $file 
         or die "cannot open the file: $!";
-    while (<$fh>){
-        $csr_or_cert =  (m/-----BEGIN CERTIFICATE REQUEST-----/i) ? 
-                        `openssl req -in $file -noout -text`:
-                        (m/-----BEGIN CERTIFICATE-----/i) ? 
-                        `openssl x509 -in $file -noout -text`: 
-                        undef;
-        last if defined $csr_or_cert;
-    }
+    $_ = <$fh>;
+    $csr_or_cert =  (m/-----BEGIN CERTIFICATE REQUEST-----/i) ? 
+                    `openssl req -in $file -noout -text`:
+                    (m/-----BEGIN CERTIFICATE-----/i) ? 
+                    `openssl x509 -in $file -noout -text`: 
+                    undef;
+
     close $fh;
     die "No CSR or CRT found: $!" unless defined $csr_or_cert;
-    print STDERR Dumper ("INTERMEDIATE!".$csr_or_cert);
     $csr_or_cert =~ m#Subject: (.*)#;
     my @subject_array = split /,/, $1;
     
