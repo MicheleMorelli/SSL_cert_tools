@@ -8,6 +8,7 @@ use Crypt::OpenSSL::Random;
 use Crypt::OpenSSL::X509;
 use DateTime;
 use Net::SSLeay qw/sslcat/;
+use File::Slurp;
 use Data::Dumper;
 
 
@@ -69,7 +70,6 @@ sub get_subject {
                     (m/-----BEGIN CERTIFICATE-----/i) ? 
                     `openssl x509 -in $file -noout -text`: 
                     undef;
-
     close $fh;
     die "No CSR or CRT found: $!" unless defined $csr_or_cert;
     $csr_or_cert =~ m#Subject: (.*)#;
@@ -97,11 +97,13 @@ sub make_email{
     open my $fh, '<', "template" 
         or die "cannot read the file: $!";
     my $pretty_subject = $self->pretty_subject($csr);
+    my $dns = $self->get_subject($csr)->{CN};
+    my $csr_string = read_file($csr); #File::Slurp 
     print STDERR $pretty_subject."\n";
     while (my $line = <$fh>){
-        $line =~ s/<CSR>/LLIFHSGDHJFGDKSGKFJFJS/;
-        $line =~ s/<NAME>/GINO/;
-        $line =~ s/<DOMAIN>/www.test.com/;
+        $line =~ s/<CSR>/$csr_string/;
+#        $line =~ s/<NAME>/GINO/;
+        $line =~ s/<DOMAIN>/$dns/;
         $line =~ s/<PRETTY_SUBJECT>/$pretty_subject/;
         print $line;
     }

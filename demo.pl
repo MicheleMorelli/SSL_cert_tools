@@ -9,7 +9,7 @@ my $c = Quick_SSL->new();
 
 #$c->print_sorted_expiry_dates("list.list")
 #my $cert = $c->get_cert_from_site("research.gold.ac.uk");
-$c->make_email("TEST.crt");
+$c->make_email("TEST.csr");
 
 #print Dumper $c->get_subject("TEST.crt");
 #print $cert->as_string();
