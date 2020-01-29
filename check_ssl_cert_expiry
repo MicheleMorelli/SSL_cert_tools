@@ -1,10 +1,26 @@
 #! /usr/bin/perl -w
-
-
 use strict;
 use Quick_SSL;
 
-# We expect a list of URLs to be passed as an argument.
+=begin comment
+This script prints the expiry dates of SSL certificates of websites listed in a text file.
+The URLs in the list file that is passed as an argument are expected to be in this format:
+
+www.example.com
+www.anotherexample.co.uk
+www.yetanotherexample.it 
+
+Please note that the URLs should not contain the scheme part (e.g. http://). 
+
+Example usage:
+$./check_ssl_cert_expiry url_list.txt
+
+=end comment
+
+=cut
+
+
+# We expect a file containing a list of URLs to be passed as an argument.
 # The script quits if the list is not specified.
 my $num_args = $#ARGV + 1;
 if ($num_args != 1) {
