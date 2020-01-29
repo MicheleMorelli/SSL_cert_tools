@@ -11,6 +11,74 @@ use Net::SSLeay qw/sslcat/;
 use File::Slurp;
 use Data::Dumper;
 
+=pod
+
+=head1 Quick SSL
+
+This functions are aimed at dealing open_SSL-related tasks in a quick 
+and automated way.
+
+=head2 ll
+
+Similar to bash's ls -l, it prints the contents of the working directory,
+including the read/write privileges.
+
+=head2 make_private_key
+
+Generates a private key and stores it in a .key file.
+
+=head2 make_read_only
+
+Makes a file read only (chmod 400).
+
+=head2 pretty_subject
+
+Prints the subject of a SSL certificate.
+
+=head2 has_expired
+
+Checks if a SSL certificate has expired. 
+
+=head2 give_month_number
+
+Checks if a SSL certificate has expired. 
+
+=head2 get_cert_from_site
+
+Takes an URL as an argument, and returns an SSL certificate. 
+
+=head2 get_cert_from_file
+
+Returns an SSL cetificate from a file, and takes a sitecode as an argument. 
+
+=head2 get_urls_from_file
+
+Takes a file containing a list of urls, and returns a @list of urls.
+
+=head2 get_all_certs_expiry_dates
+
+Returns the expiry dates of all the sites as a hashref.
+
+=head2 print_sorted_expiry_dates
+
+Sorts the hashref containing the FQDNS and the expiry dates of the certificate associated to it, and prints them.
+
+=head2 pretty_datetime
+
+Takes a datetime object as an argument, and returns a a string in the dd-mm-yyyy 
+format.
+
+=head2 make_email
+
+Prints the CSR email for the contract renewal.
+
+=head2 get_subject
+
+Takes either a CSR or a certificate stored in a file and returns an hashref containing the fields of the subject.
+
+=cut
+
+
 
 sub new {
     my $class = shift;
@@ -241,69 +309,3 @@ sub pretty_datetime {
 __END__
 
 
-=pod
-
-=head1 Quick SSL
-
-This functions are aimed at dealing open_SSL-related tasks in a quick 
-and automated way.
-
-=head2 ll
-
-Similar to bash's ls -l, it prints the contents of the working directory,
-including the read/write privileges.
-
-=head2 make_private_key
-
-Generates a private key and stores it in a .key file.
-
-=head2 make_read_only
-
-Makes a file read only (chmod 400).
-
-=head2 pretty_subject
-
-Prints the subject of a SSL certificate.
-
-=head2 has_expired
-
-Checks if a SSL certificate has expired. 
-
-=head2 give_month_number
-
-Checks if a SSL certificate has expired. 
-
-=head2 get_cert_from_site
-
-Takes an URL as an argument, and returns an SSL certificate. 
-
-=head2 get_cert_from_file
-
-Returns an SSL cetificate from a file, and takes a sitecode as an argument. 
-
-=head2 get_urls_from_file
-
-Takes a file containing a list of urls, and returns a @list of urls.
-
-=head2 get_all_certs_expiry_dates
-
-Returns the expiry dates of all the sites as a hashref.
-
-=head2 print_sorted_expiry_dates
-
-Sorts the hashref containing the FQDNS and the expiry dates of the certificate associated to it, and prints them.
-
-=head2 pretty_datetime
-
-Takes a datetime object as an argument, and returns a a string in the dd-mm-yyyy 
-format.
-
-=head2 make_email
-
-Prints the CSR email for the contract renewal.
-
-=head2 get_subject
-
-Takes either a CSR or a certificate stored in a file and returns an hashref containing the fields of the subject.
-
-=cut
