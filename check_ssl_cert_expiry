@@ -8,7 +8,7 @@ use Quick_SSL;
 # The script quits if the list is not specified.
 my $num_args = $#ARGV + 1;
 if ($num_args != 1) {
-    print "\nYou need to specify a file containing a list of URLs to check.\n For example:\n\$check_ssl_cert_expiry url_list.txt\nTerminating...";
+    print "\nYou need to specify a file containing a list of URLs to check.\n For example:\n\$check_ssl_cert_expiry url_list.txt\nTerminating...\n";
     exit;
 }
 
