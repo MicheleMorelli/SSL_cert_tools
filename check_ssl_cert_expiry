@@ -19,6 +19,10 @@ Please note that the URLs should not contain the scheme part (e.g. http://).
 Example usage:
 $./check_ssl_cert_expiry url_list.txt
 
+
+Before using, please make sure that you have all the required dependecies (see
+the README file for more information).
+
 =end comment
 
 =cut
