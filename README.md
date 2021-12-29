@@ -12,5 +12,15 @@ You can install them via CPAN or, if on Ubuntu, just running the following comma
 should do the trick:
 
 ```
-sudo apt-get install -y libcrypt-openssl-rsa-perl libcrypt-openssl-x509-perl libwww-perl libdatetime-perl libfile-slurp-perl
+sudo apt install -y libcrypt-openssl-rsa-perl libcrypt-openssl-x509-perl libwww-perl libdatetime-perl libfile-slurp-perl
+```
+
+If you are using `yum` instead of `apt`, the following dependencies will be needed (please note that you might have to enable `epel-release` for some of them to be found):
+```
+perl-Crypt-OpenSSL-RSA
+perl-Crypt-OpenSSL-X509
+perl-DateTime-TimeZone
+perl-Net-SSLeay
+perl-File-Slurp
+perl-Data-Dumper
 ```
